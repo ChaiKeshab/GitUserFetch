@@ -1,0 +1,194 @@
+.userdata-container {
+  margin: 85px 102px;
+}
+.userdata-container .top-bar {
+  display: flex;
+  place-content: space-between;
+}
+.userdata-container .top-bar svg {
+  color: #1C1C1C;
+  width: 34px;
+  height: 29px;
+}
+.userdata-container .top-bar button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.userdata-container .top-bar .hire-me {
+  margin: 5px;
+  width: 204px;
+  height: 46px;
+  background-color: #DE5A21;
+  border-radius: 10px;
+}
+.userdata-container .top-bar .hire-me:hover {
+  cursor: pointer;
+}
+.userdata-container .top-bar .hire-me:active {
+  background-color: #a84419;
+}
+.userdata-container .top-bar .hire-me button {
+  color: white;
+  font-size: 16px;
+  border: none;
+  height: 100%;
+  width: 100%;
+}
+.userdata-container .main {
+  border: 1px solid #000;
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  justify-content: center;
+  align-items: center;
+}
+.userdata-container .main .main-container {
+  text-align: center;
+}
+.userdata-container .main .main-container div {
+  height: 99px;
+}
+.userdata-container .main .main-container div img {
+  width: 144px;
+  height: 144px;
+  border-radius: 50%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 50%;
+  position: relative;
+  bottom: 75px;
+}
+.userdata-container .main .main-container a {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 42px;
+  text-decoration: none;
+  color: black;
+}
+.userdata-container .main .main-container a:hover {
+  cursor: pointer;
+}
+.userdata-container .main .main-container a h1 {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 42px;
+}
+.userdata-container .main .main-container h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 28px;
+}
+.userdata-container .main .main-container h2 a {
+  text-decoration: none;
+  color: #000;
+}
+.userdata-container .main .main-container h2 a:hover {
+  text-decoration: underline;
+}
+.userdata-container .main .follow {
+  display: flex;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin-top: 15px;
+}
+.userdata-container .main .follow div {
+  margin: 7px;
+  display: flex;
+  place-content: center;
+  flex-direction: column;
+  width: 142px;
+}
+.userdata-container .main .follow div .follow-num {
+  background-color: #fff;
+  font-size: 36px;
+  line-height: 42px;
+}
+.userdata-container .main .follow div div {
+  text-align: center;
+  background-color: #EAEAEA;
+  width: 142px;
+  height: 36px;
+  border-radius: 3px;
+}
+.userdata-container .main .user-info {
+  display: flex;
+  place-content: center;
+  margin-top: 20px;
+  height: 100%;
+  width: 100%;
+}
+.userdata-container .main .user-detail,
+.userdata-container .main .bio {
+  border: 1px solid #C4C4C4;
+  border-radius: 4px;
+  box-sizing: border-box;
+  padding: 42px;
+  margin: 0 20px 85px 20px;
+  height: auto;
+  width: 100%;
+  max-width: 491px;
+}
+.userdata-container .main .user-detail {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid #C4C4C4;
+}
+.userdata-container .main .user-detail .user-data {
+  display: flex;
+  flex-direction: column;
+  height: -moz-fit-content;
+  height: fit-content;
+  min-height: 40px;
+  width: 100%;
+  margin: 10px 10px 30px 10px;
+}
+.userdata-container .main .user-detail .user-data div {
+  display: flex;
+  align-items: flex-end;
+}
+.userdata-container .main .user-detail .user-data div svg {
+  width: 20px;
+  height: 20px;
+  -o-object-fit: contain;
+     object-fit: contain;
+  fill: #7E7E7E;
+  stroke: #7E7E7E;
+}
+.userdata-container .main .user-detail .user-data div div {
+  margin-left: 10px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+  color: #7E7E7E;
+}
+.userdata-container .main .user-detail .user-data div {
+  font-weight: 700;
+  margin: 0;
+  font-size: 19px;
+}
+.userdata-container .main .user-detail .user-data div a {
+  text-decoration: none;
+  color: #000;
+}
+.userdata-container .main .user-detail .user-data div a:hover {
+  text-decoration: underline;
+}
+.userdata-container .main .bio {
+  text-align: left;
+}
+.userdata-container .main .bio h3 {
+  margin: 10px;
+  font-size: 18px;
+  line-height: 21px;
+}
+.userdata-container .main .bio p {
+  margin: 0 0 0 10px;
+  font-size: 14px;
+  line-height: 16px;
+}/*# sourceMappingURL=UserData.css.map */

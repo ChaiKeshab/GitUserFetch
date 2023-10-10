@@ -1,0 +1,237 @@
+.userdata-container {
+    margin: 85px 102px;
+
+    .top-bar {
+        display: flex;
+        place-content: space-between;
+
+        svg {
+            color: #1C1C1C;
+            width: 34px;
+            height: 29px;
+        }
+
+        button {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+
+        }
+
+        .hire-me {
+            margin: 5px;
+            width: 204px;
+            height: 46px;
+            background-color: #DE5A21;
+            border-radius: 10px;
+
+            &:hover {
+                cursor: pointer;
+            }
+
+            &:active {
+                background-color: #a84419;
+            }
+
+            button {
+                color: white;
+                font-size: 16px;
+                border: none;
+                height: 100%;
+                width: 100%;
+            }
+        }
+    }
+
+    .main {
+        border: 1px solid #000;
+        margin-top: 60px;
+        display: flex;
+        flex-direction: column;
+        border-radius: 6px;
+        justify-content: center;
+        align-items: center;
+
+        .main-container {
+            text-align: center;
+
+            div {
+                height: 99px;
+
+                img {
+                    width: 144px;
+                    height: 144px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border-radius: 50%;
+
+                    position: relative;
+                    bottom: 75px;
+                }
+            }
+
+            a {
+                margin: 0;
+                font-size: 36px;
+                font-weight: 700;
+                line-height: 42px;
+                text-decoration: none;
+                color: black;
+
+                &:hover {
+                    cursor: pointer;
+                }
+
+                h1 {
+                    margin: 0;
+                    font-size: 36px;
+                    font-weight: 700;
+                    line-height: 42px;
+                }
+            }
+
+
+            h2 {
+                margin: 0;
+                font-size: 24px;
+                font-weight: 700;
+                line-height: 28px;
+
+                a {
+                    text-decoration: none;
+                    color: #000;
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+
+        .follow {
+            display: flex;
+            width: fit-content;
+            margin-top: 15px;
+            // border: 1px solid black;
+
+            div {
+                margin: 7px;
+                display: flex;
+                place-content: center;
+                flex-direction: column;
+                width: 142px;
+
+                .follow-num {
+                    background-color: #fff;
+                    font-size: 36px;
+                    line-height: 42px;
+                }
+
+                div {
+                    text-align: center;
+                    background-color: #EAEAEA;
+                    width: 142px;
+                    height: 36px;
+                    border-radius: 3px;
+                }
+
+            }
+        }
+
+        .user-info {
+            display: flex;
+            place-content: center;
+            margin-top: 20px;
+            height: 100%;
+            width: 100%;
+        }
+
+        .user-detail,
+        .bio {
+            border: 1px solid #C4C4C4;
+            border-radius: 4px;
+            box-sizing: border-box;
+            padding: 42px;
+            margin: 0 20px 85px 20px;
+
+            // height: 257px;
+            // width: 491px;
+            height: auto;
+            width: 100%;
+            max-width: 491px;
+        }
+
+        .user-detail {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+
+            border: 1px solid #C4C4C4;
+
+            .user-data {
+                // border: 1px solid red;
+                display: flex;
+                flex-direction: column;
+                height: fit-content;
+                min-height: 40px;
+                width: 100%;
+                margin: 10px 10px 30px 10px;
+
+                div {
+                    display: flex;
+                    align-items: flex-end;
+
+
+                    svg {
+                        width: 20px;
+                        height: 20px;
+                        object-fit: contain;
+                        fill: #7E7E7E;
+                        stroke: #7E7E7E;
+                    }
+
+                    div {
+                        margin-left: 10px;
+                        font-weight: 400;
+                        font-size: 14px;
+                        line-height: 16px;
+                        color: #7E7E7E;
+                    }
+                }
+
+                div {
+                    font-weight: 700;
+                    margin: 0;
+                    font-size: 19px;
+
+                    a {
+                        text-decoration: none;
+                        color: #000;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
+
+                    // overflow: hidden;
+                }
+            }
+        }
+
+        .bio {
+            text-align: left;
+
+            h3 {
+                margin: 10px;
+                font-size: 18px;
+                line-height: 21px;
+            }
+
+            p {
+                margin: 0 0 0 10px;
+                font-size: 14px;
+                line-height: 16px;
+            }
+        }
+    }
+}
