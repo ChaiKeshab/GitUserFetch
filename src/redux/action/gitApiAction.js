@@ -3,9 +3,6 @@ import axios from "axios"
 export const gitApiHit = (userSearchData) => {
     return async (dispatch) => {
         try {
-            dispatch({
-                type: "FETCH_GIT_USER"
-            })
             const url = `https://api.github.com/users/${userSearchData}`
             const response = await axios.get(url)
 

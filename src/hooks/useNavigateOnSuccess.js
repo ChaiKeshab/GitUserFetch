@@ -10,12 +10,10 @@ function useNavigateOnSuccess(searchData, result) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // console.log(searchData, 'searchData')
-        // console.log(result, 'result')
-        // console.log('out route')
 
         if (Object.keys(result).length !== 0) {
             const queryParams = new URLSearchParams();
+            console.log(result)
 
             //setting data in url. if the data is null or empty, don't set it
             if (result.avatar_url) queryParams.set('avatar', result.avatar_url);

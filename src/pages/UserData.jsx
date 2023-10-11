@@ -1,12 +1,10 @@
 import { useNavigate } from 'react-router-dom'
-import PropTypes from 'prop-types';
 import './UserData.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { userSearchData } from '../redux/action/searchAction'
-// import email from '../assets/Images/envelope-icon.svg'
 
 const UserData = () => {
 
@@ -35,13 +33,6 @@ const UserData = () => {
 
     // console.log(email)
 
-
-    // const { avatar, name, email, location, company, twitter, twitterLink, blog, blogText, bio,
-    //     followers, following,
-    //     repoCount,
-    //     createdDate,
-    //     hireable, html_url
-    // } = props
 
     const handleClick = () => {
         dispatch(userSearchData(''))
@@ -175,27 +166,6 @@ const UserData = () => {
         </div>
     )
 }
-
-UserData.propTypes = {
-    avatar: PropTypes.string,
-    name: PropTypes.string,
-    email: PropTypes.string,
-    location: PropTypes.string,
-    company: PropTypes.string,
-    twitter: PropTypes.string,
-    twitterLink: PropTypes.string,
-    blog: PropTypes.string,
-    blogText: PropTypes.string,
-    bio: PropTypes.string,
-    followers: PropTypes.string,
-    following: PropTypes.string,
-
-    repoCount: PropTypes.number,
-
-    createdDate: PropTypes.string,
-    hireable: PropTypes.bool,
-    html_url: PropTypes.string
-};
 
 
 export default UserData
