@@ -13,7 +13,7 @@ const gitApiReducer = (state = initialState, action) => {
         case 'FETCH_GIT_USER_ERROR':
             return { ...state, isLoading: false, error: action.payload }
         default:
-            return state;
+            return initialState;
     }
 }
 

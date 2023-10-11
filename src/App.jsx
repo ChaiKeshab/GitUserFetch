@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import Landing from './pages/Landing'
-import Api from './pages/Api'
+// import Api from './pages/Api'
+import UserData from './pages/UserData'
 
 
 // import { useSelector } from 'react-redux'
@@ -11,9 +12,12 @@ const App = () => {
   return (
     <>
       <Routes>
-        <Route exact path='/' element={<Landing />} />
-        {/* <Route exact path='/:id' element={<RouteCheck />} /> */}
-        <Route exact path={`/:id`} element={<Api />} />
+
+        <Route exact path='/'>
+          <Route index element={<Landing />} />
+          <Route exact path={':id'} element={<UserData />} />
+        </Route>
+
       </Routes>
     </>
   )

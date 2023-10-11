@@ -1,5 +1,5 @@
 const initialState = {
-    data: null
+    data: ''
 }
 
 const searchReducer = (state = initialState, action) => {
@@ -8,7 +8,7 @@ const searchReducer = (state = initialState, action) => {
             return { ...state, data: action.payload }
 
         default:
-            return state
+            return initialState
     }
 }
 

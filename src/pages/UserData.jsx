@@ -4,24 +4,48 @@ import './UserData.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { useSearchParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { userSearchData } from '../redux/action/searchAction'
 // import email from '../assets/Images/envelope-icon.svg'
 
-const UserData = (props) => {
+const UserData = () => {
 
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     // const [searchParams, setSearchParams] = useSearchParams();
     const [searchParams] = useSearchParams()
-    const data1 = searchParams.get('avatar')
-    const navigate = useNavigate()
 
-    const { avatar, name, email, location, company, twitter, twitterLink, blog, blogText, bio,
-        followers, following,
-        repoCount,
-        createdDate,
-        hireable, html_url
-    } = props
+    //pulling data from url
+    const avatar = searchParams.get('avatar')
+    const name = searchParams.get('name')
+    const email = searchParams.get('email')
+    const location = searchParams.get('location')
+    const company = searchParams.get('company')
+    const twitter = searchParams.get('twitter')
+    const blog = searchParams.get('blog')
+    const blogText = searchParams.get('blogText')
+    const twitterLink = searchParams.get('twitterLink')
+    const bio = searchParams.get('bio')
+    const followers = searchParams.get('followers')
+    const following = searchParams.get('following')
+    const repoCount = searchParams.get('repoCount')
+    const createdDate = searchParams.get('createdDate')
+    const hireable = searchParams.get('hireable')
+    const html_url = searchParams.get('html_url')
+
+    // console.log(email)
+
+
+    // const { avatar, name, email, location, company, twitter, twitterLink, blog, blogText, bio,
+    //     followers, following,
+    //     repoCount,
+    //     createdDate,
+    //     hireable, html_url
+    // } = props
 
     const handleClick = () => {
-        navigate('/');
+        dispatch(userSearchData(''))
+        navigate('/', { replace: true });
     }
 
     const handleOpenLink = () => {
@@ -38,7 +62,6 @@ const UserData = (props) => {
 
     return (
         <div className='userdata-container'>
-            <h1>{data1}</h1>
             <div className='top-bar'>
                 <button onClick={handleClick}><FontAwesomeIcon icon={faArrowLeft} /></button>
                 {hireable &&

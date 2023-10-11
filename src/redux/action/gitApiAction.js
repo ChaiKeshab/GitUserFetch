@@ -13,14 +13,12 @@ export const gitApiHit = (userSearchData) => {
                 type: "FETCH_GIT_USER_SUCCESS",
                 payload: response.data
             })
-            return true;
         }
         catch (error) {
             dispatch({
                 type: "FETCH_GIT_USER_ERROR",
                 payload: error.message
             })
-            throw false
         }
     }
 }
