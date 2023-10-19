@@ -1,37 +1,68 @@
-import { useNavigate } from 'react-router-dom'
-import './UserData.css'
+import { useNavigate, useParams } from 'react-router-dom'
+// import './UserData.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
-import { useSearchParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { userSearchData } from '../redux/action/searchAction'
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { gitApiHit, userSearchData } from '../redux/action/index'
+import { useEffect, useRef } from 'react';
+
+import {
+    formatDate,
+    formatFollow,
+    formatLinkNewTab,
+    formatUrlText,
+    formatUrlTwitter
+} from '../utils/index';
+
+import {
+    Date,
+    Email,
+    Location,
+    Organization,
+    Website,
+    Twitter
+} from '../assets/SVG/index'
+
+import { UserInfoCard, Button, UserStatsCard } from '../components/index'
 
 const UserData = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    // const [searchParams, setSearchParams] = useSearchParams();
-    const [searchParams] = useSearchParams()
+    const hasDispatchRef = useRef(false)
 
-    //pulling data from url
-    const avatar = searchParams.get('avatar')
-    const name = searchParams.get('name')
-    const email = searchParams.get('email')
-    const location = searchParams.get('location')
-    const company = searchParams.get('company')
-    const twitter = searchParams.get('twitter')
-    const blog = searchParams.get('blog')
-    const blogText = searchParams.get('blogText')
-    const twitterLink = searchParams.get('twitterLink')
-    const bio = searchParams.get('bio')
-    const followers = searchParams.get('followers')
-    const following = searchParams.get('following')
-    const repoCount = searchParams.get('repoCount')
-    const createdDate = searchParams.get('createdDate')
-    const hireable = searchParams.get('hireable')
-    const html_url = searchParams.get('html_url')
+    const { id } = useParams()
+    const result = useSelector(state => state.gitApi.data, shallowEqual)
 
-    // console.log(email)
+    // result was being updated on each re-render (2 times) which caused useEffect, dispatch to run two times.
+    // to execute the dispatch only once, a new condition is placed using useRef.
+    // Since useRef doesn't trigger re-render when it's value is changed, it's the best choice.
+
+    useEffect(() => {
+        if (Object.keys(result).length === 0 && hasDispatchRef.current === false) {
+            dispatch(gitApiHit(id));
+            hasDispatchRef.current = true
+        }
+
+    }, [dispatch, id, result])
+
+    const avatar = result.avatar_url
+    const name = result.name
+    const email = result.email
+    const location = result.location
+    const company = result.company
+    const bio = result.bio
+    const hireable = result.hireable
+    const html_url = result.html_url
+
+    const repoCount = result.public_repos
+    const twitter = result.twitter_username
+    const blog = result.blog
+    const blogText = formatUrlText(result.blog)
+    const twitterLink = formatUrlTwitter(result.twitter_username)
+    const followers = formatFollow(result.followers)
+    const following = formatFollow(result.following)
+    const createdDate = formatDate(result.created_at)
 
 
     const handleClick = () => {
@@ -39,131 +70,145 @@ const UserData = () => {
         navigate('/', { replace: true });
     }
 
-    const handleOpenLink = () => {
-        const url = !blog.startsWith('http://') && !blog.startsWith('https://');
-
-        if (url) {
-            const fullURL = `https://${blog}`;
-            window.open(fullURL, '_blank');
-        } else {
-            window.open(blog, '_blank');
-        }
-    };
-
 
     return (
-        <div className='userdata-container'>
-            <div className='top-bar'>
-                <button onClick={handleClick}><FontAwesomeIcon icon={faArrowLeft} /></button>
+        <div className='mx-auto md:px-12 lg:px-24'>
+
+
+            <div className='TOP flex justify-between px-3 pt-5 pb-20 md:pt-24'>
+                <Button
+                    onClick={handleClick}
+                    label={<FontAwesomeIcon className="h-8 w-8" icon={faArrowLeft} />}
+                    className='p-0'
+                />
+
                 {hireable &&
-                    <a className='hire-me' href={html_url} target='_blank' rel='noreferrer'>
-                        <button>
-                            Hire Me
-                        </button>
+                    <a
+                        className='bg-primary py-2 px-4 text-white border-none rounded-md 
+                        hover:cursor-pointer active:bg-orange-800 md:px-10 '
+                        href={html_url} target='_blank' rel='noreferrer'>
+                        Hire Me
                     </a>
                 }
             </div>
 
-            <div className='main'>
-                <div className='main-container'>
-                    <div><img src={avatar} alt="avatar" /></div>
-                    <a className='hire-me' href={html_url} target='_blank' rel='noreferrer'>
-                        <h1>
+
+
+
+            <div className='MAIN m-3 p-2 relative border-2 border-black rounded-xl'>
+
+                <div className='AVATAR text-center'>
+
+                    <img className='absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full w-24 object-cover
+                        md:w-40'
+                        src={avatar} alt="avatar" />
+
+                    <h1 className='mt-12 text-bold text-2xl 
+                        md:mt-24 md:text-3xl'>
+                        <a href={html_url} target='_blank' rel='noreferrer'>
                             {name}
-                        </h1>
-                    </a>
-                    <h2><a href={twitterLink} target='_blank' rel='noreferrer'>{twitter ? `@${twitter}` : ''}</a></h2>
+                        </a>
+                    </h1>
+
+                    <h2 className='text-bold text-2xl 
+                        md:text-3xl'>
+                        <a href={twitterLink} target='_blank' rel='noreferrer'>
+                            {twitter ? `@${twitter}` : ''}
+                        </a>
+                    </h2>
+
                 </div>
 
-                <div className='follow'>
-                    <div>
-                        <div className='follow-num'>{followers}</div>
-                        <div>Followers</div>
-                    </div>
-                    <div>
-                        <div className='follow-num'>{following}</div>
-                        <div>Following</div>
-                    </div>
-                    <div>
-                        <div className='follow-num'>{repoCount}</div>
-                        <div>Repositories</div>
-                    </div>
+
+                <div className='FOLLOW flex w-full flex-wrap justify-center text-center mt-4 
+                    md:space-x-4 '>
+
+                    <UserStatsCard
+                        number={followers}
+                        label='Followers'
+                    />
+
+                    <UserStatsCard
+                        number={following}
+                        label='Following'
+                    />
+
+                    <UserStatsCard
+                        number={repoCount}
+                        label='Repositories'
+                    />
+
                 </div>
 
-                <div className='user-info'>
-                    <div className='user-detail'>
-
-                        <div className='user-data'>
-                            <div>
-                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.879px" height="88.855px" viewBox="0 0 122.879 88.855">
-                                    <g><path d="M7.048,0h108.784c1.939,0,3.701,0.794,4.977,2.069c1.277,1.277,2.07,3.042,2.07,4.979v74.759 c0,1.461-0.451,2.822-1.221,3.951c-0.141,0.365-0.361,0.705-0.662,0.994c-0.201,0.189-0.422,0.344-0.656,0.461 c-1.225,1.021-2.799,1.643-4.508,1.643H7.048c-1.937,0-3.701-0.793-4.979-2.07C0.794,85.51,0,83.748,0,81.807V7.048 c0-1.941,0.792-3.704,2.068-4.979C3.344,0.792,5.107,0,7.048,0L7.048,0z M5.406,78.842l38.124-38.22L5.406,9.538V78.842 L5.406,78.842z M47.729,44.045L8.424,83.449h105.701L76.563,44.051L64.18,54.602l0,0c-0.971,0.83-2.425,0.877-3.453,0.043 L47.729,44.045L47.729,44.045z M80.674,40.549l36.799,38.598V9.198L80.674,40.549L80.674,40.549z M8.867,5.406l53.521,43.639 l51.223-43.639H8.867L8.867,5.406z" /></g>
-                                </svg>
-                                <div>Email</div>
-                            </div>
-                            <div><a href={`mailto:${email}`} target='_blank' rel='noreferrer'>{email}</a></div>
 
 
-                        </div>
+                <div className='mt-6 w-full flex flex-col flex-wrap
+                md:p-10 lg:flex-row lg:justify-evenly'>
 
-                        <div className='user-data'>
-                            <div>
-                                <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 104.44 122.88" width="122.879px" height="88.855px">
-                                    <path d="M3.55,119.32H0v3.56H92.49v-3.56h-2v-17a1.22,1.22,0,0,0-1.22-1.22H75.54a1.22,1.22,0,0,0-1.22,1.22v17H48.47V95.23a1.63,1.63,0,0,0-1.63-1.62H19.94a1.63,1.63,0,0,0-1.63,1.62v24.09H0V2.6A2.79,2.79,0,0,1,.82.85h0a2.84,2.84,0,0,1,2-.84H63.93a2.82,2.82,0,0,1,2,.84l.13.13a2.83,2.83,0,0,1,.72,1.89V34.57H102a2.39,2.39,0,0,1,1.69.7h0a2.36,2.36,0,0,1,.7,1.68v84.29a1.63,1.63,0,0,1-1.63,1.63H92.49v-3.56H101V38H66.79v81.34H63.23V3.56H3.55V119.32Zm84.54,0H76.76V103.5H88.09v15.82ZM85.45,45h8.81c.07,0,.13.1.13.22v5.71c0,.1-.06.21-.13.21H85.45c-.07,0-.13-.09-.13-.21V45.22c0-.12.06-.22.13-.22Zm0,39.6h8.81c.07,0,.13.1.13.21v5.71c0,.11-.06.22-.13.22H85.45c-.07,0-.13-.1-.13-.22V84.81c0-.11.06-.21.13-.21Zm-14.85,0h8.8c.08,0,.14.1.14.21v5.71c0,.11-.06.22-.14.22H70.6c-.08,0-.14-.1-.14-.22V84.81c0-.11.06-.21.14-.21ZM85.45,71.4h8.81c.07,0,.13.10.13.22v5.71c0,.11-.06.22-.13.22H85.45c-.07,0-.13-.10-.13-.22V71.62c0-.13.06-.22.13-.22Zm0-13.2h8.81c.07,0,.13.10.13.22v5.71c0,.11-.06.22-.13.22H85.45c-.07,0-.13-.10-.13-.22V58.42c0-.12.06-.22.13-.22ZM70.6,45h8.8c.08,0,.14.10.14.22v5.71c0,.10-.06.21-.14.21H70.6c-.08,0-.14-.09-.14-.21V45.22c0-.12.06-.22.14-.22ZM70.6,71.4h8.8c.08,0,.14.10.14.22v5.71c0,.11-.06.22-.14.22H70.6c-.08,0-.14-.10-.14-.22V71.62c0-.13.06-.22.14-.22ZM70.6,58.2h8.8c.08,0,.14.10.14.22v5.71c0,.11-.06.22-.14.22H70.6c-.08,0-.14-.10-.14-.22V58.42c0-.12.06-.22.14-.22ZM45.21,119.32H21.57V96.86H45.21v22.46ZM12.13,12.52h9.58a.28.28,0,0,1,.27.27v9.59a.28.28,0,0,1-.27.27H12.13a.28.28,0,0,1-.27-.27V12.79a.28.28,0,0,1,.27-.27ZM32.07,12.52h9.58a.28.28,0,0,1,.27.27v9.59a.28.28,0,0,1-.27.27H32.07a.28.28,0,0,1-.27-.27V12.79a.28.28,0,0,1,.27-.27ZM15.28,33.28h9.58a.28.28,0,0,1,.27.27v9.59a.28.28,0,0,1-.27.27H15.28a.28.28,0,0,1-.27-.27V33.55a.28.28,0,0,1,.27-.27ZM35.22,33.28h9.58a.28.28,0,0,1,.27.27v9.59a.28.28,0,0,1-.27.27H35.22a.28.28,0,0,1-.27-.27V33.55a.28.28,0,0,1,.27-.27ZM18.43,54h9.58a.27.27,0,0,1,.27.27V63.9a.28.28,0,0,1-.27.27H18.43a.28.28,0,0,1-.27-.27V54.31a.27.27,0,0,1,.27-.27ZM38.37,54h9.58a.27.27,0,0,1,.27.27V63.9a.28.28,0,0,1-.27.27H38.37a.28.28,0,0,1-.27-.27V54.31a.27.27,0,0,1,.27-.27ZM21.58,74.8h9.58a.27.27,0,0,1,.27.27v9.58a.27.27,0,0,1-.27.27H21.58a.27.27,0,0,1-.27-.27V75.07a.27.27,0,0,1,.27-.27ZM41.52,74.8h9.58a.27.27,0,0,1,.27.27v9.58a.27.27,0,0,1-.27.27H41.52a.27.27,0,0,1-.27-.27V75.07a.27.27,0,0,1,.27-.27Z" />
-                                </svg>
-                                <div>Organization</div>
-                            </div>
-                            <div>{company}</div>
-                        </div>
+                    <div className='INFO p-6 grid grid-cols-1 gap-6 rounded-md border-2 border-[#C4C4C4]
+                    md:grid-cols-2 lg:w-[45%]'>
 
-                        <div className='user-data'>
-                            <div>
-                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 92.26 122.88" style={{ enableBackground: 'new 0 0 92.26 122.88' }} xmlSpace="preserve" width="122.879px" height="88.855px"><g>
-                                    <path d="M47.49,116.85c6.31-4.01,11.98-8.87,16.92-14.29c10.73-11.75,17.97-26.11,20.87-40.2c2.88-13.91,1.52-27.54-4.85-38.06 c-1.81-3.02-4.08-5.78-6.78-8.26c-7.74-7.05-16.6-10.41-25.52-10.5c-9.37-0.07-18.87,3.45-27.27,10.14 c-3.58,2.86-6.53,6.15-8.82,9.78c-5.9,9.28-7.69,20.8-5.74,32.85c1.97,12.23,7.78,25.02,17.04,36.61 c6.44,8.08,14.54,15.58,24.18,21.91L47.49,116.85L47.49,116.85z M46.13,21.16c7.05,0,13.45,2.86,18.06,7.49 c4.63,4.63,7.49,11,7.49,18.06c0,7.05-2.86,13.45-7.49,18.06c-4.63,4.63-11,7.49-18.06,7.49c-7.05,0-13.45-2.86-18.06-7.49 c-4.63-4.63-7.49-11-7.49-18.06c0-7.05,2.86-13.45,7.49-18.06C32.7,24.02,39.07,21.16,46.13,21.16L46.13,21.16z M60.51,32.33 c-3.67-3.67-8.78-5.97-14.38-5.97c-5.63,0-10.71,2.27-14.38,5.97c-3.67,3.67-5.97,8.78-5.97,14.38c0,5.63,2.27,10.71,5.97,14.38 c3.67,3.67,8.78,5.97,14.38,5.97c5.63,0,10.71-2.27,14.38-5.97c3.67-3.67,5.97-8.78,5.97-14.38C66.47,41.08,64.21,36,60.51,32.33 L60.51,32.33z M68.52,106.27c-5.6,6.12-12.09,11.61-19.42,16.06c-0.88,0.66-2.13,0.75-3.13,0.11 c-10.8-6.87-19.85-15.13-26.99-24.09C9.15,86.02,2.94,72.34,0.83,59.16c-2.15-13.36-0.14-26.2,6.51-36.68 c2.63-4.13,5.97-7.89,10.07-11.14C26.78,3.88,37.51-0.07,48.17,0c10.28,0.09,20.42,3.9,29.22,11.93c3.09,2.81,5.67,5.99,7.78,9.48 c7.15,11.77,8.69,26.81,5.56,42.01c-3.11,15.04-10.8,30.33-22.18,42.8L68.52,106.27L68.52,106.27z" /></g>
-                                </svg>
-                                <div>Location</div>
-                            </div>
-                            <div>{location}</div>
-                        </div>
+                        <UserInfoCard
+                            image={<Email />}
+                            label='Email'
+                        >
+                            {email && <a href={`mailto:${email}`} target='_blank' rel='noreferrer'>{email}</a>}
+                        </UserInfoCard>
 
-                        <div className='user-data'>
-                            <div>
-                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 122.88" style={{ enableBackground: 'new 0 0 122.88 122.88' }} xmlSpace="preserve" width="122.879px" height="88.855px">
-                                    <g><path d="M81.61,4.73c0-2.61,2.58-4.73,5.77-4.73s5.77,2.12,5.77,4.73v20.72c0,2.61-2.58,4.73-5.77,4.73s-5.77-2.12-5.77-4.73V4.73L81.61,4.73z M29.61,4.73c0-2.61,2.58-4.73,5.77-4.73s5.77,2.12,5.77,4.73v20.72c0,2.61-2.58,4.73-5.77,4.73s-5.77-2.12-5.77-4.73V4.73L29.61,4.73z M6.4,45.32h110.08V21.47c0-0.8-0.33-1.53-0.86-2.07c-0.53-0.53-1.26-0.86-2.07-0.86H103c-1.77,0-3.2-1.43-3.2-3.2c0-1.77,1.43-3.2,3.2-3.2h10.55c2.57,0,4.9,1.05,6.59,2.74c1.69,1.69,2.74,4.02,2.74,6.59v27.06v65.03c0,2.57-1.05,4.9-2.74,6.59c-1.69,1.69-4.02,2.74-6.59,2.74H9.33c-2.57,0-4.9-1.05-6.59-2.74C1.05,118.45,0,116.12,0,113.55V48.53V21.47c0-2.57,1.05-4.9,2.74-6.59c1.69-1.69,4.02-2.74,6.59-2.74H20.6c1.77,0,3.2,1.43,3.2,3.2c0,1.77-1.43,3.20,3.20,3.20H9.33 c-0.8,0-1.53,0.33-2.07,0.86c-0.53,0.53-0.86,1.26-0.86,2.07V45.32L6.4,45.32z M116.48,51.73H6.4v61.82c0,0.8,0.33,1.53,0.86,2.07 c0.53,0.53,1.26,0.86,2.07,0.86h104.22c0.8,0,1.53-0.33,2.07-0.86c0.53-0.53,0.86-1.26,0.86-2.07V51.73L116.48,51.73z M50.43,18.54 c-1.77,0-3.2-1.43-3.20-3.20c0-1.77,1.43-3.20,3.20-3.20h21.49c1.77,0,3.20,1.43,3.20,3.20c0,1.77-1.43,3.20-3.20,3.20H50.43L50.43,18.54z" /></g>
-                                </svg>
-                                <div>Joined Date</div>
-                            </div>
-                            <div>{createdDate}</div>
-                        </div>
 
-                        <div className='user-data'>
-                            <div>
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 3333 2725" style={{ enableBackground: 'new 0 0 92.26 122.88' }} xmlSpace="preserve" width="3333px" height="2725px">
-                                    <path d="M3150 459c-12 4-25 7-37 11-66 18-134 31-203 39-26 3-49-16-52-42-2-20 8-39 25-47 63-38 119-87 164-145 19-24 36-49 52-76-29 14-59 26-90 38-72 28-148 49-225 65-17 3-34-3-45-16-57-60-126-109-204-142-75-32-158-50-246-50-170 0-325 69-436 181-112 112-181 266-181 436 0 25 1 48 4 71 3 24 7 47 12 69 6 25-10 51-35 56-5 1-10 1-15 1-278-14-540-87-774-206-221-112-418-266-581-451-13 29-23 58-31 89-14 52-21 106-21 161 0 105 26 205 72 291 48 90 117 166 202 222 22 14 28 44 13 65-10 15-27 22-43 21-56-2-111-10-163-25-29-8-56-17-83-29 13 122 62 233 136 323 89 108 213 186 356 214 26 5 42 30 37 56-4 19-18 32-35 37-29 8-60 14-92 18s-63 6-94 6c-17 0-35-1-53-2 44 94 110 175 192 236 100 74 223 119 356 122 26 0 47 22 46 48 0 15-7 28-18 36-120 94-256 169-402 219-131 45-271 71-417 75 98 49 201 90 307 121 1 0 1 0 2 1 163 48 336 73 516 73 548 0 982-209 1290-517 363-363 553-864 553-1326v-42c0-13-1-27-1-42-1-16 7-31 20-40 62-45 120-95 174-150 17-18 33-36 49-54zm-62-80c60-16 119-37 175-62 18-10 41-7 56 8 17 17 18 45 3 63-46 68-97 132-154 190-51 53-107 102-166 147v19c0 20 1 35 1 44 0 486-200 1012-581 1393-325 325-781 545-1357 545-188 0-370-27-542-77-1 0-2 0-2-1-178-52-345-129-498-227-16-9-26-27-24-47 3-26 27-44 52-41 26 3 51 5 76 7 24 1 50 2 77 2 148 0 289-25 421-70 98-34 191-79 276-134-105-21-201-65-284-126-118-88-208-211-254-354-2-7-3-15-2-23 5-26 29-43 55-38 19 3 39 6 58 8 9 1 19 2 28 2-82-44-155-105-214-176-100-123-161-280-161-451v-8c0-8 2-15 6-23 12-23 41-31 64-19 39 21 79 38 122 51-40-43-74-92-102-144-54-100-84-215-84-335 0-63 8-125 25-185 16-60 40-118 72-173 3-5 6-9 11-13 20-16 50-13 66 7 162 199 365 364 597 481 207 105 436 172 679 192-1-6-2-12-2-18-3-27-5-55-5-82 0-196 80-374 208-503C1913 79 2090 0 2287 0c100 0 196 21 283 58 82 35 155 85 218 147 63-14 125-32 185-55 69-26 135-58 197-95 11-7 25-9 38-4 25 8 38 34 30 59-27 83-68 159-121 225-13 16-26 32-40 47l7-2z" />
-                                </svg>
-                                <div>Twitter</div>
-                            </div>
-                            <div><a href={twitterLink} target='_blank' rel='noreferrer'>{twitter ? `@${twitter}` : ''}</a></div>
-                        </div>
+                        <UserInfoCard
+                            image={<Organization />}
+                            label='Organization'
+                        >
+                            {company}
+                        </UserInfoCard>
 
-                        <div className='user-data'>
-                            <div>
-                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.879 122.879" enableBackground="new 0 0 122.879 122.879" xmlSpace="preserve" width="122.879px" height="88.855px"> <g><path
-                                    d="M109.465,89.503c0.182,0,0.359,0.019,0.533,0.053c1.146-1.998,2.191-4.095,3.135-6.286 c0.018-0.044,0.037-0.086,0.059-0.128c1.418-3.345,2.488-6.819,3.209-10.419c0.559-2.793,0.904-5.657,1.035-8.591h-16.893 c-0.307,8.574-2.867,17.03-7.639,25.371H109.465L109.465,89.503z M106.52,94.889H89.506c-5.164,7.481-12.121,14.87-20.838,22.167 c1.367-0.17,2.719-0.388,4.055-0.655c3.646-0.729,7.164-1.817,10.549-3.264l-0.002-0.004c3.441-1.48,6.646-3.212,9.609-5.199 c2.969-1.992,5.721-4.255,8.25-6.795l0.01-0.01l0,0C103.096,99.18,104.889,97.099,106.52,94.889L106.52,94.889z M54.21,117.055 c-8.716-7.296-15.673-14.685-20.838-22.166H16.361c1.631,2.21,3.423,4.291,5.379,6.24l0.01,0.011v-0.001 c2.53,2.54,5.282,4.803,8.25,6.795c2.962,1.987,6.167,3.719,9.609,5.199c0.043,0.019,0.086,0.038,0.128,0.059 c3.345,1.419,6.819,2.488,10.42,3.209C51.493,116.668,52.843,116.886,54.21,117.055L54.21,117.055z M12.852,89.503h17.122 c-4.771-8.341-7.332-16.797-7.637-25.371H5.445c0.13,2.934,0.475,5.797,1.034,8.59c0.729,3.646,1.818,7.164,3.264,10.549 l0.004-0.001C10.682,85.442,11.716,87.521,12.852,89.503L12.852,89.503z M5.445,58.747h16.997c0.625-8.4,3.412-16.857,8.407-25.371 H12.852c-1.136,1.982-2.17,4.061-3.105,6.234c-0.019,0.043-0.039,0.086-0.059,0.127C8.269,43.083,7.2,46.557,6.479,50.157 C5.92,52.95,5.575,55.814,5.445,58.747L5.445,58.747z M16.361,27.991h17.938c5.108-7.361,11.862-14.765,20.29-22.212 c-1.496,0.175-2.973,0.408-4.431,0.7c-3.647,0.729-7.164,1.818-10.549,3.264l0.001,0.003c-3.442,1.481-6.647,3.212-9.609,5.2 c-2.968,1.992-5.72,4.255-8.25,6.794l-0.011,0.01h0C19.784,23.7,17.992,25.78,16.361,27.991L16.361,27.991z M68.289,5.778 c8.428,7.447,15.182,14.851,20.291,22.212h17.939c-1.631-2.21-3.424-4.291-5.381-6.24l-0.01-0.01l0,0 c-2.529-2.54-5.281-4.802-8.25-6.794c-2.963-1.988-6.168-3.719-9.609-5.2c-0.043-0.018-0.086-0.038-0.127-0.059 c-3.346-1.418-6.82-2.488-10.42-3.208C71.264,6.187,69.785,5.954,68.289,5.778L68.289,5.778z M110.027,33.376H92.029 c4.996,8.514,7.783,16.971,8.408,25.371h16.998c-0.131-2.934-0.477-5.797-1.035-8.59c-0.73-3.646-1.818-7.164-3.264-10.549 l-0.004,0.002C112.197,37.437,111.164,35.358,110.027,33.376L110.027,33.376z M49.106,1.198C53.098,0.399,57.21,0,61.44,0 c4.23,0,8.341,0.399,12.333,1.198c3.934,0.788,7.758,1.97,11.473,3.547c0.051,0.018,0.1,0.037,0.148,0.058 c3.703,1.594,7.197,3.485,10.471,5.684c3.268,2.192,6.291,4.677,9.066,7.462c2.785,2.775,5.799,5.799,7.461,9.065 c2.197,3.275,4.09,6.768,5.684,10.473l-0.004,0.001l0.004,0.009c1.607,3.758,2.809,7.628,3.605,11.609 c0.799,3.992,1.197,8.104,1.197,12.334c0,4.23-0.398,8.343-1.197,12.335c-0.787,3.932-1.971,7.758-3.547,11.472 c-0.018,0.05-0.037,0.099-0.059,0.147c-1.594,3.705-3.486,7.197-5.684,10.472c-2.191,3.267-4.676,6.29-7.461,9.065 c-2.775,2.785-5.799,5.271-9.066,7.462c-3.273,2.198-6.768,4.091-10.471,5.684l-0.002-0.004l-0.01,0.004 c-3.758,1.606-7.629,2.808-11.609,3.604c-3.992,0.799-8.104,1.198-12.333,1.198c-4.229,0-8.342-0.399-12.334-1.198 c-3.933-0.787-7.758-1.97-11.474-3.546c-0.049-0.019-0.098-0.037-0.147-0.059c-3.705-1.593-7.197-3.485-10.472-5.684 c-3.266-2.191-6.29-4.677-9.065-7.462c-2.785-2.775-5.27-5.799-7.461-9.065c-2.198-3.274-4.09-6.767-5.684-10.472l0.004-0.002 l-0.004-0.009c-1.606-3.758-2.808-7.628-3.604-11.609C0.4,69.782,0,65.67,0,61.439c0-4.229,0.4-8.342,1.199-12.334 c0.787-3.933,1.97-7.758,3.546-11.473c0.018-0.049,0.037-0.099,0.058-0.147c1.594-3.705,3.485-7.198,5.684-10.473 c2.192-3.266,4.677-6.29,7.461-9.065c2.775-2.785,5.799-5.27,9.065-7.462c3.275-2.198,6.768-4.09,10.472-5.684l0.001,0.004 l0.009-0.004C41.254,3.197,45.125,1.995,49.106,1.198L49.106,1.198z M64.133,9.268v18.723h17.826 C77.275,21.815,71.34,15.575,64.133,9.268L64.133,9.268z M64.133,33.376v25.371h30.922c-0.699-8.332-3.789-16.788-9.318-25.371 H64.133L64.133,33.376z M64.133,64.132v25.371h22.51c5.328-8.396,8.189-16.854,8.531-25.371H64.133L64.133,64.132z M64.133,94.889 v18.952c7.645-6.283,13.902-12.601,18.746-18.952H64.133L64.133,94.889z M58.747,113.843V94.889H40 C44.843,101.24,51.1,107.559,58.747,113.843L58.747,113.843z M58.747,89.503V64.132H27.706c0.341,8.518,3.201,16.975,8.531,25.371 H58.747L58.747,89.503z M58.747,58.747V33.376H37.143c-5.529,8.583-8.619,17.04-9.319,25.371H58.747L58.747,58.747z M58.747,27.991 V9.266C51.54,15.573,45.604,21.815,40.92,27.991H58.747L58.747,27.991z" /></g>
-                                </svg>
-                                <div>Website</div>
-                            </div>
-                            <div><a href={blog} target='_blank' rel='noreferrer' onClick={handleOpenLink}>{blogText}</a></div>
-                        </div>
+
+                        <UserInfoCard
+                            image={<Location />}
+                            label='Location'
+                        >
+                            {location}
+                        </UserInfoCard>
+
+
+                        <UserInfoCard
+                            image={<Date />}
+                            label='Joined Date'
+                        >
+                            {createdDate}
+                        </UserInfoCard>
+
+
+                        <UserInfoCard
+                            image={<Twitter />}
+                            label='Twitter'
+                        >
+                            {twitterLink && <a href={twitterLink} target='_blank' rel='noreferrer'>{twitter && `@${twitter}`}</a>}
+                        </UserInfoCard>
+
+
+                        <UserInfoCard
+                            image={<Website />}
+                            label='Website'
+                        >
+                            {blog && <a href={blog} className='inline-block w-fit' target='_blank' rel='noreferrer'
+                                onClick={() => formatLinkNewTab(blog)}>{blogText}</a>}
+                        </UserInfoCard>
 
                     </div>
 
-                    <div className='bio'>
-                        <h3>Bio</h3>
-                        <p>{bio}</p>
+
+                    <div className='BIO mt-4 p-6 rounded-md border-2 border-[#C4C4C4]
+                    lg:w-[45%] lg:mt-0'>
+
+                        <h3 className='text-xl font-bold'>Bio</h3>
+                        <p className='mt-3'>{bio}</p>
                     </div>
+
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 
