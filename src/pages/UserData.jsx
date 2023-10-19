@@ -54,10 +54,11 @@ const UserData = () => {
     const bio = result.bio
     const hireable = result.hireable
     const html_url = result.html_url
+    const blog = result.blog
 
     const repoCount = result.public_repos
     const twitter = result.twitter_username
-    const blog = result.blog
+
     const blogText = formatUrlText(result.blog)
     const twitterLink = formatUrlTwitter(result.twitter_username)
     const followers = formatFollow(result.followers)

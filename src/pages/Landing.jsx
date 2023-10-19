@@ -62,15 +62,15 @@ const Landing = () => {
             />
 
             <div className='absolute top-1/3 w-full left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center
-            md:top-1/2 md:w-2/5'>
+            md:top-1/2 md:w-3/5 lg:w-2/5'>
 
-                <h1 className='text-3xl font-bold md:text-4xl'>
+                <h1 className='text-3xl font-bold text-center md:text-4xl'>
                     Github Profile</h1>
 
                 <p className="text-slate-800 text-center text-2xl md:text-3xl">Generate your Github Profile</p>
 
                 <div className='flex flex-col items-center w-[90%] flex-wrap mt-3 space-y-3 
-                md:flex-row md:mt-0 md:w-full'>
+                md:flex-row md:w-full md:justify-between'>
                     <Input
                         value={search}
                         onChange={handleInputChange}
@@ -86,10 +86,10 @@ const Landing = () => {
                         onClick={handleSubmit}
                         label={'Generate'}
                         className='p-2 w-1/2  bg-primary text-white  
-                        active:bg-orange-800 md:w-[28%] md:ml-2'
+                        active:bg-orange-800 md:w-[28%] '
                     />
                 </div>
-                {error && <h1 className="m-0 text-slate-800 ">User not found</h1>}
+                {error && <h1 className="mt-4 text-red-700 ">User not found</h1>}
             </div>
         </>
     )
